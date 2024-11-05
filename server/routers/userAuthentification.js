@@ -63,6 +63,13 @@ Router.use(express.json())
 let nonVerifiedTokens = {};
 
 Router.post('/check-email' , (req , res) => {    //here we recieve request to get verification mail
+
+  const fullUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+  
+  // Slice to keep everything before '/my_router'
+  const index = fullUrl.indexOf('/check-email');
+  const urlBeforeMyRouter = index !== -1 ? fullUrl.slice(0, index) : fullUrl;
+
   const USER_INFOS = req.body;       // getting the sent user informations
 
   //Check if email and username are not existing...
@@ -135,7 +142,7 @@ Router.post('/check-email' , (req , res) => {    //here we recieve request to ge
 
     <p>Thank you for signing up! To complete your registration and activate your account, please verify your email address by clicking the link below:</p>
 
-    <a href="${process.env.glitch_url}/verify/${token}" target="_blank">Verify My Email</a>
+    <a href="${urlBeforeMyRouter}/verify/${token}" target="_blank">Verify My Email</a>
 
     <p>If you didn’t sign up for an account, you can safely ignore this email.</p>
 
@@ -143,7 +150,7 @@ Router.post('/check-email' , (req , res) => {    //here we recieve request to ge
 
     <div class="footer">
       <p>If you’re having trouble clicking the "Verify My Email" button, copy and paste the URL below into your web browser:</p>
-      <p> ${process.env.glitch_url}/verify/${token} </p>
+      <p> ${urlBeforeMyRouter}/verify/${token} </p>
     </div>
   </div>
 </body>
@@ -207,43 +214,7 @@ Router.get('/verify/:token' , (req , res) => {  //verify the mail
     `);
   }
   else{
-    userOps.addUserIntoDatabase(data , res);
-    res.send(`
-      <html>
-      <head>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            padding: 20px;
-            text-align: center;
-          }
-          .container {
-            max-width: 600px;
-            margin: auto;
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-          }
-          h1 {
-            color: #dc3545; /* Red color for error */
-          }
-          p {
-            font-size: 16px;
-            line-height: 1.5;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <h1>Email Verification Secces</h1>
-          <p>Unfortunately, we verify your email. Please go to the site and login.</p>
-        </div>
-      </body>
-      </html>
-    `);
+    userOps.addUserIntoDatabase(data, req , res , `/verify`);
   }
 })
 

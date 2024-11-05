@@ -30,12 +30,16 @@ const MYSQL_CONFIGURATION = {
  * @returns {void}
  */
 
-async function addUserIntoDatabase(user , res){
+async function addUserIntoDatabase(user, req , res, router_parent){
   
   //Create a connection to the database using the loaded informations 
   const Pool = mysql.createPool(MYSQL_CONFIGURATION);
 
-
+  const fullUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+  
+  // Slice to keep everything before '/my_router'
+  const index = fullUrl.indexOf(router_parent);
+  const urlBeforeMyRouter = index !== -1 ? fullUrl.slice(0, index) : fullUrl;
   //test the connection
   var hash = crypto.createHash('sha256').update(user.password).digest('hex')     //hashing the password
   var date = `${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDate()}`   //getting the date now
@@ -87,7 +91,7 @@ async function addUserIntoDatabase(user , res){
   <div class="container">
     <h1>Email Verified Successfully</h1>
     <p>Your email has been successfully verified. You can now log in to your account.</p>
-    <a href="www.google.com">Go to the login page</a>
+    <!-- <a href="${urlBeforeMyRouter}">Go to the login page</a> -->
   </div>
 </body>
 </html>
