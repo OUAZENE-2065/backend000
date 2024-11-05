@@ -233,7 +233,8 @@ Router.post('/login' , (req , res) => {     //login
     else{
       //valid login
       res.status(200).send(JSON.stringify({
-        username : data[0].username
+        username : data[0].username,
+        photo : null  // Add User Photo
       }));
     }
   }) 

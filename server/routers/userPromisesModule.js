@@ -44,7 +44,7 @@ async function addUserIntoDatabase(user, req , res, router_parent){
   var hash = crypto.createHash('sha256').update(user.password).digest('hex')     //hashing the password
   var date = `${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDate()}`   //getting the date now
   try{
-    await Pool.query(`INSERT INTO users(fname , lname , email , user_password,username , created , updated) values ('${user.fname}','${user.lname}','${user.email}','${hash}','${user.username}','${date}', '${date}')` ) ; // try to insert into db
+    await Pool.query(`INSERT INTO users(fname , lname , email , user_password , username , created , updated) values ('${user.fname}','${user.lname}','${user.email}','${hash}','${user.username}','${date}', '${date}')` ) ; // try to insert into db
     // user is sucessfully added to the database so send sucess message
     res.send(`
 <html>
