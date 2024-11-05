@@ -80,7 +80,7 @@ Router.post('/check-email' , (req , res) => {    //here we recieve request to ge
             else{
                 let token = GenerateToken(USER_INFOS);      //Generates verification token
                 transport.sendMail({
-                    from:'younesali687@gmail.com',
+                    from:'aamasaamas222@gmail.com',
                     to: USER_INFOS.email,
                     subject : 'Verify your e-mail',         //sends mail with the verification link
                     html : `<!DOCTYPE html>
@@ -135,7 +135,7 @@ Router.post('/check-email' , (req , res) => {    //here we recieve request to ge
 
     <p>Thank you for signing up! To complete your registration and activate your account, please verify your email address by clicking the link below:</p>
 
-    <a href="https://astonishing-beneficial-ocelot.glitch.me/verify/${token}" target="_blank">Verify My Email</a>
+    <a href="${process.env.glitch_url}/verify/${token}" target="_blank">Verify My Email</a>
 
     <p>If you didn’t sign up for an account, you can safely ignore this email.</p>
 
@@ -143,7 +143,7 @@ Router.post('/check-email' , (req , res) => {    //here we recieve request to ge
 
     <div class="footer">
       <p>If you’re having trouble clicking the "Verify My Email" button, copy and paste the URL below into your web browser:</p>
-      <p> https://astonishing-beneficial-ocelot.glitch.me/verify/${token} </p>
+      <p> ${process.env.glitch_url}/verify/${token} </p>
     </div>
   </div>
 </body>
@@ -165,7 +165,7 @@ Router.post('/check-email' , (req , res) => {    //here we recieve request to ge
     })
 })
 
-Router.get('/:token' , (req , res) => {  //verify the mail
+Router.get('/verify/:token' , (req , res) => {  //verify the mail
   let {token}  = req.params;     //get the token to verify
   let data = nonVerifiedTokens[token];  //get the user related to that token
   if(data == undefined){            //if token is not existing (due to time expired for example) we send an error message
@@ -207,7 +207,43 @@ Router.get('/:token' , (req , res) => {  //verify the mail
     `);
   }
   else{
-    userOps.addUserIntoDatabase(data , res)
+    userOps.addUserIntoDatabase(data , res);
+    res.send(`
+      <html>
+      <head>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+            text-align: center;
+          }
+          .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          }
+          h1 {
+            color: #dc3545; /* Red color for error */
+          }
+          p {
+            font-size: 16px;
+            line-height: 1.5;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>Email Verification Secces</h1>
+          <p>Unfortunately, we verify your email. Please go to the site and login.</p>
+        </div>
+      </body>
+      </html>
+    `);
   }
 })
 
