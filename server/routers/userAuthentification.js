@@ -62,7 +62,7 @@ Router.use(express.json())
 //Create an dictionary of tokens as keys and their users as values and delete them after verification or after expiring
 let nonVerifiedTokens = {};
 
-Router.post('/' , (req , res) => {    //here we recieve request to get verification mail
+Router.post('/check-email' , (req , res) => {    //here we recieve request to get verification mail
   const USER_INFOS = req.body;       // getting the sent user informations
 
   //Check if email and username are not existing...
